@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스마트 풀 API 문서</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2, h3, h3 {
+            color: #333;
+        }
+        .endpoint {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        pre {
+            background-color: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            background-color: #eee;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<h1>스마트 풀 API 문서</h1>
+<h2>기본 URL</h2>
+<pre>http://localhost:3000</pre>
+
+<h2>엔드포인트</h2>
+
+<div class="endpoint">
+    <h2>사용자</h2>
+
+    <h3>사용자 등록</h3>
+    <p><strong>엔드포인트:</strong> <code>/users/register</code></p>
+    <p><strong>Method:</strong> <code>POST</code></p>
+    <p><strong>설명:</strong> 새로운 사용자를 등록합니다.</p>
+    <p><strong>Request 본문:</strong></p>
+    <pre>{
+    "userID": "string",
+    "password": "string",
+    "role": "string",  // "member" 또는 "instructor"
+    "age": "number",
+    "phone": "string",
+    "userName": "string",
+    "email": "string",
+    "poolID": "number"
+}</pre>
+    <p><strong>Response:</strong></p>
+    <ul>
+        <li><code>201</code>: 사용자 등록 완료.</li>
+        <li><code>400</code>: 사용자 ID가 이미 존재합니다.</li>
+        <li><code>500</code>: 사용자 등록 중 오류 발생.</li>
+    </ul>
+
+    <h3>사용자 로그인</h3>
+    <p><strong>엔드포인트:</strong> <code>/users/login</code></p>
+    <p><strong>Method:</strong> <code>POST</code></p>
+    <p><strong>설명:</strong> 사용자를 로그인하고 사용자 정보를 반환합니다.</p>
+    <p><strong>Request 본문:</strong></p>
+    <pre>{
+    "userID": "string",
+    "password": "string"
+}</pre>
+    <p><strong>Response:</strong></p>
+    <ul>
+        <li><code>200</code>: 사용자 로그인 성공.</li>
+        <li><code>401</code>: 유효하지 않은 자격 증명.</li>
+        <li><code>404</code>: 사용자를 찾을 수 없습니다.</li>
+        <li><code>500</code>: 사용자 정보 조회 중 오류 발생.</li>
+    </ul>
+</div>
+
+<div class="endpoint">
+    <h2>강의</h2>
+
+    <h3>모든 강의 가져오기</h3>
+    <p><strong>엔드포인트:</strong> <code>/lectures/:poolID</code></p>
+    <p><strong>Method:</strong> <code>GET</code></p>
+    <p><strong>설명:</strong> 특정 수영장(poolID)의 모든 강의를 가져옵니다.</p>
+    <p><strong>Request 파라미터:</strong></p>
+    <ul>
+        <li><code>poolID</code>: 수영장 ID</li>
+    </ul>
+    <p><strong>Response:</strong></p>
+    <pre>[
+    {
+        "lectureID": "number",
+        "lectureName": "string",
+        "instructorID": "string",
+        "lectureDate": "string",
+        "lectureTime": "string",
+        "location": "string",
+        "capacity": "number",
+        "facilityID": "number",
+        "poolID": "number",
+        "reservedCount": "number"
+    }
+]</pre>
+
+    <h3>강의 추가</h3>
+    <p><strong>엔드포인트:</strong> <code>/lectures</code></p>
+    <p><strong>Method:</strong> <code>POST</code></p>
+    <p><strong>설명:</strong> 새로운 강의를 추가합니다.</p>
+    <p><strong>Request 본문:</strong></p>
+    <pre>{
+    "lectureName": "string",
+    "instructorID": "string",
+    "lectureDate": "string",
+    "lectureTime": "string",
+    "location": "string",
+    "capacity": "number",
+    "facilityID": "number",
+    "poolID": "number"
+}</pre>
+    <p><strong>Response:</strong></p>
+    <ul>
+        <li><code>201</code>: 강의 추가 완료.</li>
+        <li><code>500</code>: 강의 추가 중 오류 발생.</li>
+    </ul>
+
+    <h3>강의 삭제</h3>
+    <p><strong>엔드포인트:</strong> <code>/lectures/:lectureID/:poolID</code></p>
+    <p><strong>Method:</strong> <code>DELETE</code></p>
+    <p><strong>설명:</strong> 특정 강의(lectureID)와 수영장(poolID)에 해당하는 강의를 삭제합니다.</p>
+    <p><strong>Request 파라미터:</strong></p>
+    <ul>
+        <li><code>lectureID</code>: 강의 ID</li>
+        <li><code>poolID</code>: 수영장 ID</li>
+    </ul>
+    <p><strong>Response:</strong></p>
+    <ul>
+        <li><code>200</code>: 강의 삭제 완료.</li>
+        <li><code>404</code>: 강의를 찾을 수 없습니다.</li>
+        <li><code>500</code>: 강의 삭제 중 오류 발생.</li>
+    </ul>
+</div>
+
+<div class="endpoint">
+    <h2>시설</h2>
+
+    <h3>모든 시설 가져오기</h3>
+    <p><strong>엔드포인트:</strong> <code>/facilities/:poolID</code></p>
+    <p><strong>Method:</strong> <code>GET</code></p>
+    <p><strong>설명:</strong> 특정 수영장(poolID)의 모든 시설을 가져옵니다.</p>
+    <p><strong>Request 파라미터:</strong></p>
+    <ul>
+        <li><code>poolID</code>: 수영장 ID</li>
+    </ul>
+    <p><strong>Response:</strong></p>
+    <pre>[
+    {
+        "facilityID": "number",
+        "name": "string",
+        "location": "string",
+        "poolID": "number"
+    }
+]</pre>
+
+    <h3>시설 추가</h3>
+    <p><strong>엔드포인트:</strong> <code>/facilities</code></p>
+    <p><strong>Method:</strong> <code>POST</code></p>
+    <p><strong>설명:</strong> 새로운 시설을 추가합니다.</p>
+    <p><strong>Request 본문:</strong></p>
+    <pre>{
+    "name": "string",
+    "location": "string",
+    "poolID": "number"
+}</pre>
+    <p><strong>Response:</strong></p>
+    <ul>
+        <li><code>201</code>: 시설 추가 완료.</li>
+        <li><code>500</code>: 시설 추가 중 오류 발생.</li>
+    </ul>
+
+    <h3>시설 삭제</h3>
+    <p><strong>엔드포인트:</strong> <code>/facilities/:facilityID/:poolID</code></p>
+    <p><strong>Method:</strong> <code>DELETE</code></p>
+    <p><strong>설명:</strong> 특정 시설(facilityID)과 수영장(poolID)에 해당하는 시설을 삭제합니다.</p>
+    <p><strong>Request 파라미터:</strong></p>
+    <ul>
+        <li><code>facilityID</code>: 시설 ID</li>
+        <li><code>poolID</code>: 수영장 ID</li>
+    </ul>
+    <p><strong>Response:</strong></p>
+    <ul>
+        <li><code>200</code>: 시설 삭제 완료.</li>
+        <li><code>404</code>: 시설을 찾을 수 없습니다.</li>
+        <li><code>500</code>: 시설 삭제 중 오류 발생.</li>
+    </ul>
+</div>
+
+<div class="endpoint">
+    <h2>예약</h2>
+
+    <h3>모든 예약 가져오기</h3>
+    <p><strong>엔드포인트:</strong> <code>/reservations/:userID</code></p>
+    <p><strong>Method:</strong> <code>GET</code></p>
+    <p><strong>설명:</strong> 특정 사용자(userID)의 모든 예약을 가져옵니다.</p>
+    <p><strong>Request 파라미터:</strong></p>
+    <ul>
+        <li><code>userID</code>: 사용자 ID</li>
+    </ul>
+    <p><strong>Response:</strong></p>
+    <pre>[
+    {
+        "reservationID": "number",
+        "userID": "string",
+        "reservationDate": "string",
+        "reservationTime": "string",
+        "lectureID": "number",
+        "poolID": "number"
+    }
+]</pre>
+
+    <h3>예약 추가</h3>
+    <p><strong>엔드포인트:</strong> <code>/reservations/create</code></p>
+    <p><strong>Method:</strong> <code>POST</code></p>
+    <p><strong>설명:</strong> 새로운 예약을 추가합니다.</p>
+    <p><strong>Request 본문:</strong></p>
+    <pre>{
+    "userID": "string",
+    "reservationDate": "string",
+    "reservationTime": "string",
+    "lectureID": "number",
+    "poolID": "number"
+}</pre>
+    <p><strong>Response:</strong></p>
+    <ul>
+        <li><code>201</code>: 예약 추가 완료.</li>
+        <li><code>500</code>: 예약 추가 중 오류 발생.</li>
+    </ul>
+
+    <h3>예약 취소</h3>
+    <p><strong>엔드포인트:</strong> <code>/reservations/cancel/:reservationID?poolID=:poolID</code></p>
+    <p><strong>Method:</strong> <code>DELETE</code></p>
+    <p><strong>설명:</strong> 특정 예약(reservationID)을 취소합니다.</p>
+    <p><strong>Request 파라미터:</strong></p>
+    <ul>
+        <li><code>reservationID</code>: 예약 ID</li>
+        <li><code>poolID</code>: 수영장 ID</li>
+    </ul>
+    <p><strong>Response:</strong></p>
+    <ul>
+        <li><code>200</code>: 예약 취소 완료.</li>
+        <li><code>404</code>: 예약을 찾을 수 없습니다.</li>
+        <li><code>500</code>: 예약 취소 중 오류 발생.</li>
+    </ul>
+</div>
+
+<div class="endpoint">
+    <h2>강사 스케줄</h2>
+
+    <h3>강사 스케줄 가져오기</h3>
+    <p><strong>엔드포인트:</strong> <code>/schedule/instructor/:userId/:poolID</code></p>
+    <p><strong>Method:</strong> <code>GET</code></p>
+    <p><strong>설명:</strong> 특정 강사(userId)의 모든 강의를 가져옵니다.</p>
+    <p><strong>Request 파라미터:</strong></p>
+    <ul>
+        <li><code>userId</code>: 강사 ID</li>
+        <li><code>poolID</code>: 수영장 ID</li>
+    </ul>
+    <p><strong>Response:</strong></p>
+    <pre>[
+    {
+        "lectureID": "number",
+        "lectureName": "string",
+        "lectureDate": "string",
+        "lectureTime": "string",
+        "location": "string",
+        "reservedCount": "number",
+        "capacity": "number"
+    }
+]</pre>
+</div>
+
+</body>
+</html>
